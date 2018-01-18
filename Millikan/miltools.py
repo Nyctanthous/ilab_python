@@ -247,13 +247,28 @@ def load_all_trajectories(base_addr: str) ->\
 
 
 class TupleBuilder:
+    """
+    Use to build all continuous pairings of a list of inputs.
+
+    For example, given the list:
+
+    A, B, C, D
+
+    the TupleBuilder will return
+
+    None, (A,B), (B,C), (C,D)
+    """
+
     def __init__(self):
+        """Dummy initializer for the TupleBuilder."""
         self.last_tuple_state = []
 
     def reset(self):
+        """Use to clear all objects stored in the TupleBuilder."""
         self.last_tuple_state = []
 
     def build_tuple(self, input):
+        """Give an object paired with the last obj, or None if no previous."""
         self.last_tuple_state.append(input)
         if len(self.last_tuple_state) == 2:
             # Full, return and reset to only have this element.
