@@ -6,7 +6,7 @@ import math
 import os
 import glob
 import pandas as pd
-from uncertainties import ufloat
+from uncertainties import ufloat, umath
 
 
 def point_line_distance(point: Tuple[float, float], start: Tuple[float, float],
@@ -42,7 +42,7 @@ def rdp(points: List[Tuple[float, float]], epsilon: float) -> float:
         if dmax >= epsilon else [points[0], points[-1]]
 
 
-def calc_velocity(track_df: pd.dataframe, px_per_mm: int, fps: int) -> float:
+def calc_velocity(track_df: pd.DataFrame, px_per_mm: int, fps: int) -> float:
     """
     Use to convert a dataframe of displacement tracks from TrackPy.
 
@@ -96,7 +96,7 @@ def calc_charge(v_f: ufloat, v_r: ufloat) -> Tuple[ufloat, ufloat, ufloat]:
     b_over_2p = b/(2*p)
     sec_term = (9*eta*v_f)/(2*g*rho)
 
-    a = sqrt(b_over_2p*b_over_2p + sec_term) - b_over_2p
+    a = umath.sqrt(b_over_2p*b_over_2p + sec_term) - b_over_2p
     m = (4*math.pi*(a**3)*rho)/3
     q = -(m*g*(abs(v_f - v_r)))/(E*v_f)
 
@@ -104,7 +104,7 @@ def calc_charge(v_f: ufloat, v_r: ufloat) -> Tuple[ufloat, ufloat, ufloat]:
     return a, m, q
 
 
-def analyze_df(df_fall: pd.dataframe, df_rise: pd.dataframe, px_per_mm: int,
+def analyze_df(df_fall: pd.DataFrame, df_rise: pd.DataFrame, px_per_mm: int,
                fps: int, tolerance=0.2) -> Tuple[bool, ufloat]:
     """
     Use to calculate a drop's charge, given Dataframes where it rises & falls.
@@ -143,7 +143,7 @@ def analyze_df(df_fall: pd.dataframe, df_rise: pd.dataframe, px_per_mm: int,
         return True, calc_charge(v_fall, v_rise)[-1]
 
 
-def load_tracks(addr: str) -> List[pd.dataframe]:
+def load_tracks(addr: str) -> List[pd.DataFrame]:
     """Use to open a CSV of a particle track and break into unique tracks."""
     data_arr = []
     for file in glob.glob(addr):
@@ -156,7 +156,7 @@ def load_tracks(addr: str) -> List[pd.dataframe]:
 
 
 def load_all_trajectories(base_addr: str) ->\
-        List[Tuple[pd.dataframe, pd.dataframe]]:
+        List[Tuple[pd.DataFrame, pd.DataFrame]]:
     """
     Return all valid pairings of up/down particle displacements.
 
